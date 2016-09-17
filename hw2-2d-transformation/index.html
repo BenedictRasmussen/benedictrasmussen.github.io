@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2D Solar System</title>
+    <style>
+        canvas {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: auto;
+            margin-bottom: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="canvas" width="800" heighth="800"></canvas>
+
+</body>
+<script>
+    /* Sun icon from http://findicons.com/icon/548243/weezle_sun
+     * Earth icon from http://findicons.com/icon/23334/globe_connected?id=358041
+     * Moon icon from http://findicons.com/icon/44393/moon_phase_full?id=44410
+     */
+    "use strict";
+
+    var canvas;
+    var ctx;
+    var width;
+    var height;
+    var ticks = 0;
+
+    var cameraX = 0;
+    var cameraY = 0;
+    var cameraScale = 1;
+    var cameraScaleFactor = 1.1;
+
+    var earthRevolution = 0;
+    var earthRotation = 0;
+    var moonRevolution = 0;
+    var moonRotation = 0;
+
+    var lastX = 0;
+    var lastY = 0;
+    
+    var sun = new Image();   // Create new img element
+    var earth = new Image();
+    var moon = new Image();
+
+    var sunPromise = getImage(sun, './sun.png');
+    var earthPromise = getImage(earth, './earthScaled.png');
+    var moonPromise = getImage(moon, './moonScaled.png');
+
+    // Middle mouse wheel handling https://www.sitepoint.com/html5-javascript-mouse-wheel/
+    document.addEventListener("mousewheel", MouseWheelHandler, false);
+    // Firefox
+    document.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+
+	// You don't need to change the model or these functions. The goal is for you to handle the rendering part.
+    function MouseWheelHandler(e) {
+        if((e.wheelDelta || -e.detail) > 0)
+            cameraScale *= cameraScaleFactor;
+        else
+            cameraScale /= cameraScaleFactor;
+    }
+
+    document.onkeyup = function(e) {
+        if(e.key == "PageUp")
+            cameraScale *= cameraScaleFactor;
+        if(e.key == "PageDown")
+            cameraScale /= cameraScaleFactor;
+    }
+
+    document.getElementById('canvas').onmousedown = function(e) {
+
+        lastX = e.pageX;
+        lastY = e.pageY;
+
+        document.onmousemove = function(e){
+           updateCamera(e.pageX - lastX, e.pageY - lastY);
+            lastX = e.pageX;
+            lastY = e.pageY;
+        }
+        
+        this.onmouseup = function(){
+            document.onmousemove = null;
+        }
+    }
+
+    function updateCamera(deltaX, deltaY) {
+        cameraX += deltaX;
+        cameraY += deltaY;
+    }
+
+    // Image promise code taken from http://www.javascriptkit.com/javatutors/javascriptpromises.shtml
+    function getImage(img, url) {
+        return new Promise(function(resolve, reject) {
+            img.onload = function(){
+                resolve("Loaded image");
+            };
+            img.onerror = function(){
+                reject("Rejected Image");
+            };
+            img.src = url
+        })
+    }
+
+    Promise.all([sunPromise, earthPromise, moonPromise]).then(function(values){boot();}, function(reason){alert("You were unable to load the required images.");});
+
+	//Again, there's no need to change this function. Trust me, these numbers aren't accurate, but they are good enough for this project.
+    function tick() {
+        ticks++;
+        earthRevolution+=.19;
+        earthRotation += .00025;
+        moonRevolution += .00349;
+        moonRotation += .00349;
+        draw();
+    }
+    
+    // There's no need to alter this setup code.
+    function boot() {
+        canvas = document.getElementById("canvas");
+        canvas.width = 800;
+        canvas.height = 800;
+        width = canvas.width;
+        height = canvas.height;
+
+        ctx = canvas.getContext("2d");
+
+        setInterval(tick, 33);
+
+        draw();
+    }
+
+	/**
+     * This is where you'll want to add code.
+	 * 1) reset the transformations.
+	 * 2) setup the transformations that drawImage calls on the sun- will put the center of the sun at 0,0.
+	 * 3) setup the transformations so that the earth is rotated earthRotation amount around the sun *and* revolved earthRevolution 
+	 * Same thing with the moon. Rotate it around the earth and revolve it using moonRotation and moonRevolution, respectively.
+	 */
+    function draw() {
+        var canvasSize = 800;
+        var canvasCenter = canvasSize / 2;
+        var imgSize = 256;
+        
+        ctx.fillStyle = "#0000000";
+        ctx.fillRect(0, 0, width, height);
+        
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        /* Manipulate camera */
+        //Center camera at canvas center
+		ctx.translate(canvasCenter, canvasCenter);
+        //zoom in / out
+		ctx.scale(cameraScale, cameraScale);
+		//Replace the camera
+        ctx.translate(-width/2, -height/2);
+        //Click and drag
+		ctx.translate(cameraX, cameraY);
+        
+        //Create the sun
+        ctx.translate(canvasCenter, canvasCenter);
+        ctx.save();
+            ctx.translate(-1 * (imgSize / 2), -1 * (imgSize / 2));
+            ctx.drawImage(sun, 0, 0);
+        ctx.restore();
+        
+        //Create the Earth
+        //Revolve (around sun)
+        ctx.rotate(earthRotation);
+        ctx.translate(imgSize / 2, imgSize / 2);
+        ctx.save();
+            //Revolve (day / night)
+            ctx.rotate(earthRevolution);
+            //Scale image against original size
+            ctx.scale(.25, .25);
+            //Translate to center of image
+            ctx.translate(-1 * (imgSize / 2), -1 * (imgSize / 2));
+            
+            ctx.drawImage(earth, 0,0);
+        ctx.restore();
+            
+        //Create the moon
+        ctx.rotate(moonRotation);
+        ctx.translate(imgSize / 6, imgSize / 6);
+        ctx.save();
+            ctx.rotate(moonRevolution);
+            //Scale image against original size
+            ctx.scale(.1, .1);
+            //Translate to center of image
+            ctx.translate(-1 * (imgSize / 2), -1 * (imgSize / 2));
+            
+            ctx.drawImage(moon, 0, 0);
+        ctx.restore();
+        
+        ctx.setTransform(1,0,0,1,0,0);
+    }
+	
+</script>
+</html>
