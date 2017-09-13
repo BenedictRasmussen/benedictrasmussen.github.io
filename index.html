@@ -1,48 +1,67 @@
 <!DOCTYPE html>
-<!--
-	Most of the layout comes from the Bootstrap Getting Started page,
-	http://getbootstrap.com/getting-started/
--->
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>BRasmussen's Biography</title>
+<html>
+<head>
+<style>
+div.container {
+    width: 100%;
+    border: 1px solid gray;
+}
 
-    <!-- Bootstrap -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+header, footer {
+    padding: 1em;
+    color: white;
+    background-color: black;
+    clear: left;
+    text-align: center;
+}
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <nav class="navbar navbar-inverse navbar-top">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Benedict Rasmussen Assignment 1</a>
-        </div>
-      </div>
-    </nav>
+nav {
+    float: left;
+    max-width: 160px;
+    margin: 0;
+    padding: 1em;
+}
 
-    <div class="container">
-     <div class="starter-template">
-	<div class="row" />
-        <div class="col-md-6" />
-	     <a href="/unity">Unity Work</a>
-        <div class="col-md-4"><img src="./summit.png" width="100%" alt="The author and his fiance"></div>
-      </div>
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+   
+nav ul a {
+    text-decoration: none;
+}
 
-    </div><!-- /.container -->
+article {
+    margin-left: 170px;
+    border-left: 1px solid gray;
+    padding: 1em;
+    overflow: hidden;
+}
+</style>
+</head>
+<body>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  </body>
+<div class="container">
+
+<header>
+   <h1>City Gallery</h1>
+</header>
+  
+<nav>
+  <ul>
+    <li><a href="Unity">Unity Projects</a></li>
+  </ul>
+</nav>
+
+<div>
+	<p> This page ain't pretty, but it does what it needs to.</p>
+  <h1>Unity</h1>
+  <p></p>
+</div>
+
+<footer>Template taken from W3Schools. Copyright &copy; W3Schools.com</footer>
+
+</div>
+
+</body>
 </html>
